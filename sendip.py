@@ -9,8 +9,21 @@ IP头里面:
 '''
 
 import socket
-from struct import pack
+from struct import pack, unpack
 import sys
+
+def checksum(ip_header):
+    ip_header += chr(0x00)*(len(ip_header)%2)
+    r = 0
+    while ip_header:
+        # 因为ip_header已经是网络序了, 所以这里用H. 否则需要用!H
+        r += unpack('H',ip_header[:2])[0]
+        ip_header = ip_header[2:]
+
+    if r > 0xffff:
+        r = r&0xffff + (r>>16);
+
+    return ~r
 
 
 def main():
@@ -41,6 +54,11 @@ def main():
 
     ip_ihl_ver = (ip_ver << 4) + ip_ihl
 
+    user_data = sys.argv[1] if sys.argv[1:] else '0123456789'
+
+    # this is really not needed, since kernel will give the correct value
+    #ip_tot_len = 20 + len(user_data)
+
     # the ! in the pack format string means network order
     ip_header = pack(
         '!BBHHHBBH4s4s',
@@ -55,7 +73,6 @@ def main():
         ip_saddr,
         ip_daddr)
 
-    user_data = sys.argv[1] if sys.argv[1:] else '0123456789'
 
     packet = ip_header + user_data
 
