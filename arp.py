@@ -52,6 +52,12 @@ def main():
 
     s = socket.socket(socket.PF_PACKET, socket.SOCK_RAW, socket.SOCK_RAW)
     s.bind(('eth0', socket.SOCK_RAW))
+
+    # 下面这样也行, 不知道区别.
+    #http://sock-raw.org/papers/sock_raw 这个应该可以参考
+    #s = socket.socket(socket.PF_PACKET, socket.SOCK_RAW)
+    #s.bind(('eth0',0))
+
     r = s.send(packed_data)
     print r
     return
