@@ -16,8 +16,8 @@ def checksum(ip_header):
     ip_header += chr(0x00)*(len(ip_header)%2)
     r = 0
     while ip_header:
-        # 因为ip_header已经是网络序了, 所以这里用H. 否则需要用!H
-        r += unpack('H',ip_header[:2])[0]
+        # 因为ip_header已经是网络序了, 所以这里用!H. 否则需要用H
+        r += unpack('!H',ip_header[:2])[0]
         ip_header = ip_header[2:]
 
     if r > 0xffff:
