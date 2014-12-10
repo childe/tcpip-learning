@@ -84,4 +84,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    ip_check = 1231    # kernel will fill the correct checksum
